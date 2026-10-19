@@ -1,0 +1,19 @@
+node_modules/
+*.log
+*.tmp
+*.bak
+*.bak-*
+.DS_Store
+Thumbs.db
+_tmp/
+_archive/
+snapshots/
+backups/
+generated/
+logs/
+coverage/
+*.tgz
+# Runtime artefacts (case packs / evidence / instance records)
+case-*/
+evidence/
+nurse-instance.json

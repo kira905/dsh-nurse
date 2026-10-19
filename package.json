@@ -1,0 +1,50 @@
+{
+  "name": "@kira905/dsh-nurse",
+  "version": "0.1.0",
+  "description": "Safe-mode repair layer for DeepSeek Harness (DSH): launch an official-plugins-only instance in an isolated home/port, collect the scene, validate a repair proposal against a whitelist, execute with pre-write backups, verify, and roll back byte-exactly. Zero third-party runtime dependencies.",
+  "license": "AGPL-3.0-only",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "dsh-nurse-collect": "collect-case.mjs",
+    "dsh-nurse-profile": "make-nurse-profile.mjs",
+    "dsh-nurse-ctl": "nurse-ctl.mjs",
+    "dsh-nurse-orchestrate": "nurse-orchestrate.mjs",
+    "dsh-nurse-verify": "nurse-verify.mjs",
+    "dsh-nurse-restore": "restore-case.mjs",
+    "dsh-nurse-retention": "retention.mjs"
+  },
+  "files": [
+    "*.mjs",
+    "lib/",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "safe-mode",
+    "repair",
+    "incident",
+    "isolated-instance",
+    "rollback",
+    "whitelist",
+    "windows"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kira905/dsh-nurse.git"
+  },
+  "homepage": "https://github.com/kira905/dsh-nurse#readme",
+  "bugs": {
+    "url": "https://github.com/kira905/dsh-nurse/issues"
+  }
+}
