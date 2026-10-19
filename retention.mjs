@@ -12,7 +12,7 @@
  *   ① **默认 dry-run**：不传 `--apply` 只报告。真删放行 = 改**配置**不是改代码
  *      （`~/.dsh/butler-nurse-retention.json` 的 `apply:true`，缺省 false）。
  *   ② `--apply` 打**默认 safeRoot**（`~/.dsh-safe`）还必须显式 `--allow-production`
- *      （照 2026-09-17 六包施工 ①-2 卡事故的加固口径：沙箱参数解析失败会静默回落生产根）。
+ *      （照过去一次沙箱事故的加固口径：沙箱参数解析失败会静默回落生产根）。
  *   ③ **路径硬闸**：待删目录必须 `path.resolve()` 后落在 safeRoot 之下、名字以 `case-` 开头；
  *      `safeRoot` 自身一律不删。
  *   ④ **不跟链接**（persona 铁律）：`lstatSync().isSymbolicLink()` 为真的目录**跳过 + 告警**
