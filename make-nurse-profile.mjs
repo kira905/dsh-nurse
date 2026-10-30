@@ -25,6 +25,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { cliGuard } from './lib/cli-args.mjs'
 
 // ---------- 常量 ----------
 const HOME = os.homedir()
@@ -37,7 +38,23 @@ const MAIN_NM = path.join(
 const KEEP_PREFIX = '@deepseek-ai/'
 
 // ---------- 参数 ----------
-const argv = process.argv.slice(2)
+const SPEC = {
+  cmd: 'dsh-nurse-profile',
+  summary: '从生产 profile 派生一个「只含官方基础 bundle」的安全模式 profile（白名单式：非官方包一律摘掉，不靠黑名单）。',
+  usage: 'dsh-nurse-profile [--home <目录>] [--source <目录>] [--modules self-links|junction-prod|none] [--dry-run] [--force]',
+  flags: [
+    { name: '--home', arg: '目录', desc: '目标 home（必须在用户目录下的 .dsh-safe 之内，否则拒跑）' },
+    { name: '--source', arg: '目录', desc: '派生源 profile（默认生产 web profile）' },
+    { name: '--modules', arg: '模式', desc: '依赖链接方式：self-links / junction-prod / none' },
+    { name: '--dry-run', desc: '只打印将写什么，不建目录' },
+    { name: '--force', desc: '目标已存在时覆盖重建' },
+  ],
+  writes: '在目标 home 下建 profiles/<名> 目录、写 package.json 并建模块链接；带 --force 会覆盖既有目标。生产 profile 只读。',
+  dryRun: '加 --dry-run 只打印计划，不写文件。',
+  exits: '0 成功 · 1 派生源缺失等前置失败 · 2 home 硬闸拒绝 / 未知 --modules 值 / 参数错误',
+  examples: ['dsh-nurse-profile --dry-run', 'dsh-nurse-profile --modules none'],
+};
+const argv = cliGuard(SPEC)
 const hasFlag = (n) => argv.includes('--' + n)
 const optVal = (n, d) => {
   const i = argv.indexOf('--' + n)

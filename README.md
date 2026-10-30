@@ -23,9 +23,10 @@
 | `make-nurse-profile.mjs` | **静默忽略，继续执行** | ⚠️ 会**真写** `.dsh-safe/profiles/nurse` |
 | `nurse-verify.mjs` | **静默忽略，继续执行** | ⚠️ 会**真写** evidence 目录 |
 
-⇒ 对后四件，**先把参数照 §4 抄对**，没有 `--help` 可用（`nurse-orchestrate` /
-`restore-case` 实现了 `-h` / `--help`，其余五件**没有**）。
-本文件不在代码块里给帮助示例 —— 参数表就是唯一权威。
+⇒ ℹ️ **2026-10-30 起，上述四件（`collect-case` / `make-nurse-profile` / `nurse-ctl` /
+`nurse-verify`）已支持 `--help`（打印用法、退出码 0）与未知参数拒收（退出码 2，绝不继续执行）**
+—— 不确定就先敲 `--help`。`nurse-orchestrate` / `restore-case` / `retention` 本来就有 `--help`；
+用法文本会写清该命令会写什么。参数表仍是权威。
 
 ### ② 所有"会写"的动作都**默认 dry-run**（`--apply` 才真写）
 
@@ -258,7 +259,7 @@ dsh-nurse/
 
 ## 7. 已知限制
 
-- **没有 `--help` 的五件**（§4.1 / 4.2 / 4.3 / 4.5）：未知参数会被忽略 ⇒ 见文首警告。
+- ~~没有 `--help` 的五件~~（2026-10-30 起已补）：本仓七个 CLI 全部支持 `--help`（退出码 0）与未知参数拒收（退出码 2，绝不继续执行）；「未知参数被忽略」只存在于 2026-10-30 之前的版本。
 - **内核缺席时编排器拒启**：这不是降级到"半功能"，是刻意保守（宁可不动）。
 - **`smoke-gate` 缺省不可用**：必须设 `DSH_SMOKE_SCRIPT`，否则冒烟闸判 `unavailable` ⇒ 拦（除非 `--allow-smoke-skip` / `NURSE_SMOKE=0`）。
 - **本机凭据件不发布**：没有它时必须显式给 `cookieSecret` / `DSH_RPC_COOKIE_SECRET`，否则对隔离实例取页面会 401。

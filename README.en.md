@@ -25,7 +25,7 @@
 | `make-nurse-profile.mjs` | silently ignored | ⚠️ really writes `.dsh-safe/profiles/nurse` |
 | `nurse-verify.mjs` | silently ignored | ⚠️ really writes the evidence dir |
 
-`nurse-orchestrate` and `restore-case` implement `-h` / `--help`; the other five do not.
+Since 2026-10-30 all seven CLIs implement `-h` / `--help` and reject unknown arguments (exit 2, never executes).
 The argument tables below are the authoritative reference.
 
 ### ② Writes default to dry-run
@@ -150,7 +150,7 @@ Exit codes: `0` ok · `1` failure / environment · `2` usage or hard gate · `3`
 
 ## 6. Known limitations
 
-- Five CLIs have no `--help` and ignore unknown arguments (see above).
+- All seven CLIs implement `--help` (exit 0) and reject unknown arguments (exit 2) since 2026-10-30.
 - With the kernel absent the orchestrator refuses to run (intentional).
 - `smoke-gate` is unavailable unless `DSH_SMOKE_SCRIPT` is set.
 - Without the local credential module you must pass `cookieSecret` / `DSH_RPC_COOKIE_SECRET`.

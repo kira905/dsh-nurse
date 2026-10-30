@@ -23,6 +23,7 @@ import os from 'node:os'
 import path from 'node:path'
 
 import { createRedactor } from './lib/redact.mjs'
+import { cliGuard } from './lib/cli-args.mjs'
 
 // 【2026-10-09 · 卡「360弹窗治本-pwsh7」】PowerShell 一律走统一工具（pwsh 7 优先）：360 企业版
 //   EDR 只对 5.1 弹「PowerShell 命令执行攻击」；工具缺失 ⇒ 兜底 powershell（绝对 URL，与邻居同风格）。
@@ -34,7 +35,24 @@ const PROD_HOME = path.join(HOME, '.dsh')
 const PROD_ROOT = process.env.DSH_ROOT || path.join(HOME, 'DSH')
 const TEMP = process.env.TEMP || os.tmpdir()
 
-const argv = process.argv.slice(2)
+const SPEC = {
+  cmd: 'dsh-nurse-collect',
+  summary: '小护士「现场包」采集器：把日志 / 进程 / 配置等现场证据采到一个 case 目录（生产目录只读，落盘前一律脱敏）。',
+  usage: 'dsh-nurse-collect [--days 7] [--tail 200] [--dry-run] [--prune]',
+  flags: [
+    { name: '--days', arg: 'N', desc: '采集窗口天数，默认 7' },
+    { name: '--tail', arg: 'N', desc: '每节日志取尾部多少行，默认 200' },
+    { name: '--retention-days', arg: 'N', desc: 'case 保留天数，默认 7' },
+    { name: '--dry-run', desc: '只打印将要采什么，不落盘' },
+    { name: '--prune', desc: '顺带清理过期 case（会删目录）' },
+    { name: '--with-config-dump', desc: '额外采主包配置转储（会临时起一次 dsh 进程，默认不采）' },
+  ],
+  writes: '写 ~/.dsh-safe/case-<时间戳>/ 下的现场包（manifest + 各节文件 + state.json）；带 --prune 时会删过期 case 目录。生产目录一个字节都不写。',
+  dryRun: '加 --dry-run 只打印计划，不落盘、不删任何东西。',
+  exits: '0 成功 · 1 前置缺失（如还没建安全 home）/ 采集失败 · 2 参数错误',
+  examples: ['dsh-nurse-collect --dry-run', 'dsh-nurse-collect --days 3 --tail 500'],
+};
+const argv = cliGuard(SPEC)
 const hasFlag = (n) => argv.includes('--' + n)
 const optVal = (n, d) => {
   const i = argv.indexOf('--' + n)

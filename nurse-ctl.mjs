@@ -35,6 +35,7 @@ import os from 'node:os'
 import path from 'node:path'
 // 【2026-09-23 · cmd 黑窗修复】起实例一律经 launcher（否则实例无控制台 ⇒ 它的命令弹黑窗）
 import { spawnHidden, readDshPidFile } from './lib/guard-launcher.mjs'
+import { cliGuard } from './lib/cli-args.mjs'
 // 【2026-10-09 · 卡「360弹窗治本-pwsh7」】PowerShell 一律走统一工具（pwsh 7 优先）：360 企业版
 //   EDR 只对 5.1 弹「PowerShell 命令执行攻击」；工具缺失 ⇒ 兜底 powershell（绝对 URL，与上一行同风格）。
 const PS_EXE = await import('./lib/powershell-exe.mjs').then((m) => m.powerShellExe()).catch(() => 'powershell')
@@ -43,7 +44,28 @@ const HOME = os.homedir()
 const SAFE_ROOT = path.join(HOME, '.dsh-safe')
 const PROD_PORT = 3080
 
-const argv = process.argv.slice(2)
+const SPEC = {
+  cmd: 'dsh-nurse-ctl',
+  summary: '小护士安全模式实例的起 / 停 / 看（三条硬闸：home 必须在安全根之下、单次互斥、生产端口一律拒绝）。',
+  usage: 'dsh-nurse-ctl <start|stop|status> [--port 3091] [--profile nurse] [--home <目录>] [--dry-run]',
+  commands: [
+    { name: 'start', desc: '拉起一个安全模式实例（新进程 + 独立日志目录）' },
+    { name: 'stop', desc: '停掉本工具拉起的那个实例（判不出归属就拒停，绝不误杀）' },
+    { name: 'status', desc: '只读：看实例在不在、端口通不通' },
+  ],
+  flags: [
+    { name: '--port', arg: 'N', desc: '实例端口，默认 3091；给 3080（生产）直接拒' },
+    { name: '--profile', arg: '名', desc: '用哪个 profile，默认 nurse' },
+    { name: '--home', arg: '目录', desc: '实例 home（必须在 .dsh-safe 之下）' },
+    { name: '--cwd', arg: '目录', desc: '实例工作目录' },
+    { name: '--dry-run', desc: 'start / stop 只打印动作，不起不停' },
+  ],
+  writes: 'start 会起一个新进程并写日志与实例记录；stop 会终止该进程。status 只读。',
+  dryRun: 'start / stop 加 --dry-run 只打印将做什么。',
+  exits: '0 成功 · 1 操作失败 · 2 硬闸拒绝 / 用法错',
+  examples: ['dsh-nurse-ctl status', 'dsh-nurse-ctl start --dry-run'],
+};
+const argv = cliGuard(SPEC)
 const cmd = argv[0]
 const hasFlag = (n) => argv.includes('--' + n)
 const optVal = (n, d) => {

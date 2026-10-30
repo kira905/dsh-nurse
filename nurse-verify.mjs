@@ -68,6 +68,7 @@ import { fileURLToPath } from 'node:url'
 //   引 `../lib/dsh-host-rpc.mjs` ⇒ **不可能**被自举成单文件复制到 %TEMP% 跑，相对路径没有额外好处；
 //   全仓只此一份码表才是要守的事。代价：真源被移走/改名时本文件 import 阶段硬失败（不静默降级）。
 import { judgeHttp, RULE_VERSION } from './lib/guard-http.mjs'
+import { cliGuard } from './lib/cli-args.mjs'
 // 【2026-10-09 · 卡「360弹窗治本-pwsh7」】PowerShell 一律走统一工具（pwsh 7 优先）：360 企业版
 //   EDR 只对 5.1（powershell.exe）弹「PowerShell 命令执行攻击」；工具缺失 ⇒ 兜底 powershell。
 const PS_EXE = await import('./lib/powershell-exe.mjs').then((m) => m.powerShellExe()).catch(() => 'powershell')
@@ -77,7 +78,24 @@ const PROD_HOME = path.join(HOME, '.dsh')
 const HERE = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'))
 const CTL = path.join(HERE, 'nurse-ctl.mjs')
 
-const argv = process.argv.slice(2)
+const SPEC = {
+  cmd: 'dsh-nurse-verify',
+  summary: '小护士安全实例验收：取证 HTTP 可达性 / boot 载荷 / 插件集 / API 探针 / 严格面零变化；--baseline 采隔离基线。',
+  usage: 'dsh-nurse-verify [--baseline|--attribution] [--port 3091] [--safe-root <目录>] [--window 30] [--json]',
+  flags: [
+    { name: '--baseline', desc: '采集隔离基线（会写一份证据文件）' },
+    { name: '--attribution', desc: '归因模式' },
+    { name: '--port', arg: 'N', desc: '要验收的实例端口，默认 3091' },
+    { name: '--safe-root', arg: '目录', desc: '安全根目录（证据落点）' },
+    { name: '--window', arg: '秒', desc: '取证时间窗，默认 30 秒' },
+    { name: '--json', desc: '只吐 JSON，不打人读日志' },
+  ],
+  writes: '默认只读取证，报告打到 stdout；--baseline 会写安全根下 evidence/baseline-before.json。生产目录只读。',
+  exits: '0 通过 · 1 有失败项 · 2 参数错误 / 撞生产端口被拒',
+  notes: ['取证目标若指向生产端口会直接 SAFETY ABORT，不对生产做任何动作'],
+  examples: ['dsh-nurse-verify --json', 'dsh-nurse-verify --baseline'],
+};
+const argv = cliGuard(SPEC)
 const hasFlag = (n) => argv.includes('--' + n)
 const optVal = (n, d) => {
   const i = argv.indexOf('--' + n)
