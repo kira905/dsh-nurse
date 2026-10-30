@@ -1,6 +1,6 @@
 {
   "name": "@kira905/dsh-nurse",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Safe-mode repair layer for DeepSeek Harness (DSH): launch an official-plugins-only instance in an isolated home/port, collect the scene, validate a repair proposal against a whitelist, execute with pre-write backups, verify, and roll back byte-exactly. Zero third-party runtime dependencies.",
   "license": "AGPL-3.0-only",
   "private": false,
