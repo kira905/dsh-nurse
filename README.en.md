@@ -69,6 +69,23 @@ Instance-launching paths are not verified on Linux/macOS.
 
 ---
 
+## Shared-source notice
+
+Some files in this repository **share a source with an internal production implementation**
+(the same engineering effort, evolved over time, with two landing places).
+
+- **How much**: measured by the **line-level shared-source ratio** (among same-named comparable files, how
+  many non-empty lines of this repository's files are found in the reference files, multiset-deducted); this
+  repository's "≥50% line-share" figure is **100%**.
+- **What that means**: this repository is a **distilled export** of that implementation — **neither a verbatim
+  copy nor a fully rewritten independent implementation**. Before reading any single file as an "independent
+  reference implementation", run the check below.
+- **How to re-run it**: the shared-source scanner ships with `dsh-quality-toolkit` as `dsh-sim-scan.mjs`
+  (`--repo <this repo> --prod-root <reference root>`); the bucket thresholds and the measurement caliber live
+  in its `config/sim-scan.json`, not buried in code.
+- **License**: see `LICENSE` at the repository root (when a subdirectory carries its own exception, that
+  subdirectory's `LICENSE` wins).
+
 ## 2. Repository layout (20 files)
 
 ```
