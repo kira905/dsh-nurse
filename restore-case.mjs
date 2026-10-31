@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * restore-case.mjs —— 小护士 case **写前备份的逐字节回滚器**（D-R-2 / C-G4 · 2026-10-10 · 卡 cf217275）
+ * restore-case.mjs —— 小护士 case **写前备份的逐字节回滚器**（D-R-2 / C-G4 · 2026-10-10）
  *
  * ── 缺口（台账3 K 域 D-R-2 🔴）──
  *   备份侧早在（`lib\proposal-guard.mjs#executeProposal` 落 `case-<ts>\before\` + sha256），

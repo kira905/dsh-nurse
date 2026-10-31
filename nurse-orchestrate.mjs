@@ -1088,7 +1088,7 @@ export async function runOrchestration(o, deps = realDeps) {
   }
   if (silenceWarn) notes.push(`收尾告警：${silenceWarn}`)
   notes.push('回滚来源：写前备份在 `_archive\\nurse-case-*\\before\\`（G4；同路径拷回即回到修复前）')
-  // ⑥a 【C-V8 · 2026-10-10 · 卡 cf217275】**知识库写入侧** —— 护士修完一场要沉淀。
+  // ⑥a 【C-V8 · 2026-10-10】**知识库写入侧** —— 护士修完一场要沉淀。
   //   缺口原话：报告在（本函数下面那步），但 `~/.dsh/repair-knowledge` 在本线**只有采集侧**
   //     （`collect-case.mjs` 读进去当现场证据）⇒ 修完什么都不留，方案 §8 P3「知识库复用」单向只读。
   //   放这条位置的理由：必须在 `reportPayload` 之前 —— 这样"知识库写入"本身也是一条 step，
