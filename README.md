@@ -1,5 +1,27 @@
 # dsh-nurse · DSH 安全模式修复层（小护士）
 
+> ### 这是什么
+> **安全模式的看护层**：把现场采集成一个「病例包」，在隔离实例里试修，验过才碰生产。
+>
+> ### 它解决什么
+> 生产环境出问题时，最危险的动作是"直接在原地改"。这里的顺序是死的：**采集（只读、落盘前脱敏）→ 隔离实例复现 → 出提案（白名单内的动作才允许）→ 写前备份 → byte-exact 回滚 → 冒烟闸**。修不好就退回原样，不留半成品。
+>
+> ### 一条命令跑起来
+> ```powershell
+> npm i -g @kira905/dsh-nurse
+> dsh-nurse-collect --days 7 --dry-run    # 先看会采什么、落到哪
+> ```
+>
+> ### 先看它长什么样（真实输出）
+> ```text
+> 用法
+>   dsh-nurse-collect [--days 7] [--tail 200] [--dry-run] [--prune]
+>
+> 小护士「现场包」采集器：把日志 / 进程 / 配置等现场证据采到一个 case 目录（生产目录只读，落盘前一律脱敏）。
+> ```
+
+---
+
 > **本仓是命令行工具，不挂宿主界面，不需要 `dsh.bundle`、不需要写 `cordis.patch.yml`。** 装它 = `npm i -g @kira905/dsh-nurse`（或 `npx -p @kira905/dsh-nurse dsh-nurse-ctl`）。装进 profile 也对，但那条 `declares no dsh.bundle` 警告是**正常现象**，不是故障。
 
 ## 装完自检（三条只读验法）
