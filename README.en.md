@@ -1,5 +1,28 @@
 # dsh-nurse · Safe-mode Repair Layer for DSH
 
+> ### What this is
+> **A safe-mode care layer**: collect the scene into a case bundle, try the repair in an isolated instance, touch production only after it verifies.
+>
+> ### What it solves
+> The most dangerous move during an incident is "fix it in place". The order here is fixed: **collect** (read-only, redacted before it hits disk) → reproduce in an isolated instance → **propose** (only whitelisted actions are allowed) → back up before writing → **byte-exact rollback** → smoke gate. If it does not fix it, you get your original state back, not a half-finished experiment.
+>
+> ### Run it in one command
+> ```powershell
+> npm i -g @kira905/dsh-nurse
+> dsh-nurse-collect --days 7 --dry-run    # see what it would collect and where it would land
+> ```
+>
+> ### Real output
+> ```text
+> Usage
+>   dsh-nurse-collect [--days 7] [--tail 200] [--dry-run] [--prune]
+>
+> Care-layer scene collector: gathers logs / processes / config evidence into one case directory
+> (production directories are read-only; everything is redacted before it is written).
+> ```
+
+---
+
 > When the production instance will not start or behaves suspiciously, do not edit files on
 > production in the dark. This toolkit gives you an isolated channel: start a safe instance from an
 > **official-plugins-only** profile, in a **separate home**, on a **separate port (3091)**;
