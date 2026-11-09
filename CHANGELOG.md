@@ -3,6 +3,14 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions follow SemVer.
 
+## [0.1.2] - 2026-11-09
+
+### Changed
+
+- `nurse-orchestrate.mjs`: one comment cited a private in-house tool path as the reference for the
+  "probe past the cursor, then fetch the tail" pagination trick. Reworded to describe the same
+  contract without naming the private path. Comment only — no behaviour change.
+
 ## [0.1.0] - 2026-10-19
 
 ### Added

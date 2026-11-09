@@ -610,7 +610,7 @@ export async function injectViaAgent(o, deps, ctx = {}) {
       //   `{ address:{kind:'session',sessionId}, throughSeq, maxMessages }`；旧形状（`sessionId`+`beforeSeq`）
       //   被 typert 边界校验拒成 `gateway/input-invalid`（本卡实测）。`throughSeq` 必须 ≤ 当前 cursor
       //   ⇒ 先用必然越界的大数探一次，从错误 `past cursor N` 学回真 cursor 再取尾部
-      //   （口径同 `tools\wecom-hub\lib\dispatch.mjs#pageTail`）。
+      //   （同一"越界探 cursor 再取尾"口径）。
       const page = await withHome(async () => {
         const call = (seq) => rpc(baseUrl, 'session.page',
           { address: { kind: 'session', sessionId: sid }, throughSeq: seq, maxMessages: 60 }, { timeoutMs: 15_000 })
